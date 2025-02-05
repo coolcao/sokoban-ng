@@ -1,5 +1,12 @@
 @if (cell) {
-<div class="w-20 h-20 flex justify-center items-center select-none"
-  [ngClass]="{'wall':cell.type==CellType.Wall,'box':cell.type==CellType.Box,'target':cell.type==CellType.Target,'player':cell.type==CellType.Player,'empty':cell.type==CellType.Empty}">
-</div>
+  <div
+    class="flex h-20 w-20 select-none items-center justify-center"
+    [ngClass]="{
+      wall: cell.type == CellType.Wall,
+      box: cell.type == CellType.Box,
+      target: cell.type == CellType.Target,
+      player: cell.type == CellType.Player,
+      empty: cell.type == CellType.Empty,
+    }"
+  ></div>
 }
