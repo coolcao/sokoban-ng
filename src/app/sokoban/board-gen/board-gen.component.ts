@@ -12,7 +12,7 @@ import { CELL } from '../sokoban.data';
 export class BoardGenComponent implements OnInit {
   rows = 10;
   cols = 10;
-  cells: Cell[] = [ CELL.EMPTY, CELL.WALL, CELL.BOX, CELL.TARGET, CELL.PLAYER ];
+  cells: Cell[] = [CELL.EMPTY, CELL.WALL, CELL.BOX, CELL.TARGET, CELL.PLAYER];
 
   selected: Cell = CELL.EMPTY;
 
@@ -57,5 +57,8 @@ export class BoardGenComponent implements OnInit {
     const json = this.getJSON();
     navigator.clipboard.writeText(json);
     alert('地图数据已复制,可直接粘贴!');
+  }
+  resetAll() {
+    this.board = this.initBoard();
   }
 }

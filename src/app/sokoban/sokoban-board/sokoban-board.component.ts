@@ -16,6 +16,7 @@ export class SokobanBoardComponent implements OnInit {
   targetPositions = this.store.targetPositions;
   finished = this.store.finished;
   dataSetName = this.store.dataSetName;
+  steps = this.store.steps;
 
   dataSetNames = dataSetNames;
 
@@ -49,11 +50,14 @@ export class SokobanBoardComponent implements OnInit {
   }
 
   movePlayer(dx: number, dy: number): void {
+    if (this.finished()) return;
     const newX = this.playerPosition().x + dx;
     const newY = this.playerPosition().y + dy;
 
     if (this.isValidMove(newX, newY, CellType.Player)) {
+      this.store.addStep();
       let board = this.board();
+      // 移动箱子
       if (board.get(newX)!.get(newY)!.type === CellType.Box) {
         const newBoxX = newX + dx;
         const newBoxY = newY + dy;
@@ -77,6 +81,7 @@ export class SokobanBoardComponent implements OnInit {
           this.store.updateBoard(board);
         }
       } else {
+        // 移动玩家
         let board = this.board();
         if (this.targetPositions().find(p => p.x == this.playerPosition().x && p.y == this.playerPosition().y)) {
           board = board.set(this.playerPosition().x, board.get(this.playerPosition().x)!.set(this.playerPosition().y, { ...CELL.TARGET, isTarget: true }));

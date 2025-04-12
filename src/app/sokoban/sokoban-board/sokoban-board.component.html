@@ -1,33 +1,94 @@
 <div
-  class="flex h-screen w-screen flex-col items-center justify-center bg-gray-200 dark:bg-gray-800"
+  class="flex min-h-screen min-w-[375px] flex-col items-center bg-gray-100 p-4 sm:p-6 dark:bg-gray-900"
 >
-  <div class="flex h-full w-full flex-col items-center justify-center">
-    <div>
-      <select
-        [ngModel]="dataSetName()"
-        (ngModelChange)="changeDataSet($event)"
-        (change)="onDataSetChange($event)"
-        class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      >
-        @for (item of dataSetNames; track $index) {
-          <option value="{{ item }}">{{ item }}</option>
-        }
-      </select>
+  <!-- 控制区域 -->
+  <div class="mb-6 w-full max-w-4xl sm:mb-8">
+    <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+      <!-- 数据集选择框 -->
+      <div class="w-full sm:w-72">
+        <select
+          [ngModel]="dataSetName()"
+          (ngModelChange)="changeDataSet($event)"
+          (change)="onDataSetChange($event)"
+          class="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-lg shadow-sm transition-all hover:scale-[1.02] focus:border-blue-500 focus:ring-4 focus:ring-blue-200/50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+        >
+          @for (item of dataSetNames; track $index) {
+            <option value="{{ item }}" class="text-base">{{ item }}</option>
+          }
+        </select>
+      </div>
+      <div class="flex justify-evenly space-x-5">
+        <div
+          class="flex items-center justify-center rounded-full border-2 border-yellow-300 bg-yellow-50 px-6 py-3 text-yellow-700 shadow-md transition-all hover:scale-[1.02] dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300"
+        >
+          操作步数：
+          <span class="text-lg font-bold">{{ steps() }}</span>
+        </div>
+
+        <!-- 状态指示 -->
+        <div
+          class="flex items-center gap-3 rounded-full border-2 px-6 py-3 backdrop-blur-sm transition-all"
+          [class]="
+            finished()
+              ? 'border-green-200/80 bg-green-50/50 text-green-700 dark:border-green-800/50 dark:bg-green-900/30 dark:text-green-300'
+              : 'border-red-200/80 bg-red-50/50 text-red-700 dark:border-red-800/50 dark:bg-red-900/30 dark:text-red-300'
+          "
+        >
+          <div class="relative flex items-center justify-center">
+            <div
+              class="absolute inset-0 animate-ping rounded-full opacity-40"
+              [class]="finished() ? 'bg-green-300' : 'bg-red-300'"
+            ></div>
+            <svg
+              [class]="finished() ? 'text-green-600' : 'text-red-600'"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              @if (finished()) {
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              } @else {
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                />
+              }
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-lg font-bold">{{
+              finished() ? "完成" : "进行中"
+            }}</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="my-5 text-gray-800 dark:text-gray-200">
-      是否完成：{{ finished() ? "✅" : "❌" }}
-    </div>
-    <div class="flex w-9/12 items-center justify-center">
-      <div class="board flex flex-col">
+  </div>
+
+  <!-- 游戏面板 -->
+  <div class="flex w-full max-w-4xl flex-1 items-center justify-center p-2">
+    <div
+      class="relative aspect-square w-full max-w-2xl rounded-2xl bg-white p-4 shadow-xl before:absolute before:inset-0 before:rounded-2xl before:shadow-[inset_0_2px_8px_rgba(0,0,0,0.1)] dark:bg-gray-800 dark:before:shadow-[inset_0_2px_8px_rgba(0,0,0,0.4)]"
+    >
+      <div class="board grid h-full w-full">
         @for (rows of board(); track $index; let row = $index) {
-          <div class="flex h-20 w-full items-center justify-center">
+          <div class="flex">
             @for (col of rows; track $index) {
-              <app-sokoban-cell [cell]="col"></app-sokoban-cell>
+              <app-sokoban-cell
+                [cell]="col"
+                class="flex aspect-square min-w-[2rem] flex-1 items-center justify-center self-center rounded-sm bg-gray-50 shadow-sm transition-all hover:z-10 hover:scale-105 hover:shadow-md sm:min-w-[3rem] md:min-w-[4rem] dark:bg-gray-700"
+              ></app-sokoban-cell>
             }
           </div>
         }
       </div>
     </div>
-
   </div>
 </div>

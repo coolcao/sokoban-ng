@@ -1,77 +1,121 @@
-<div
-  class="flex h-screen w-screen flex-col items-center justify-center dark:bg-gray-800"
->
-  <div
-    class="flex h-20 w-full items-center justify-center text-2xl text-zinc-600 dark:text-zinc-200"
-  >
-    推箱子地图生成器
+<!-- sokoban-generator.component.html -->
+<div class="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-900">
+  <!-- Header -->
+  <div class="mx-auto mb-12 max-w-4xl text-center">
+    <h1 class="mb-2 text-4xl font-bold text-gray-800 dark:text-gray-100">
+      推箱子地图生成器
+    </h1>
+    <p class="text-gray-500 dark:text-gray-400">
+      点击下方图标选择元素，然后在网格区域点击绘制地图。绘制完毕点击下方数据拷贝数据。
+    </p>
   </div>
-  <div
-    class="flex w-full items-center justify-center text-zinc-600 dark:text-zinc-200"
-  >
-    <div class="mr-5 flex w-1/2 items-center justify-end">
-      行数:
-      <select
-        [(ngModel)]="rows"
-        (ngModelChange)="onRowsColsChange()"
-        class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      >
-        <option [value]="8">8</option>
-        <option [value]="9">9</option>
-        <option [value]="10">10</option>
-        <option [value]="11">11</option>
-        <option [value]="12">12</option>
-      </select>
-    </div>
-    <div class="ml-5 flex w-1/2 items-center justify-start">
-      列数:
-      <select
-        [(ngModel)]="cols"
-        (ngModelChange)="onRowsColsChange()"
-        class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      >
-        <option [value]="8">8</option>
-        <option [value]="9">9</option>
-        <option [value]="10">10</option>
-        <option [value]="11">11</option>
-        <option [value]="12">12</option>
-      </select>
-    </div>
-  </div>
-  <div class="my-10 flex h-20 w-full items-center justify-center">
-    @for (cell of cells; track $index) {
-      <div
-        class="m-5 h-20 w-20 cursor-pointer"
-        [ngClass]="{ 'border border-solid border-gray-500': cell == EMPTY }"
-        (click)="selected = cell"
-      >
-        <app-sokoban-cell [cell]="cell"></app-sokoban-cell>
-        <span class="flex items-center justify-center" *ngIf="selected == cell"
-          >⬆️</span
-        >
+
+  <!-- Left-Right Layout -->
+  <div class="mx-auto flex max-w-screen-xl flex-col gap-8 md:flex-row">
+    <!-- Controls -->
+    <div class="rounded-xl bg-white p-6 shadow-lg md:w-1/3 dark:bg-gray-800">
+      <div class="mb-8 flex flex-col items-center justify-between gap-6">
+        <div class="flex w-full flex-1 items-center gap-4">
+          <label class="font-medium text-gray-700 dark:text-gray-300"
+            >行数:</label
+          >
+          <select
+            [(ngModel)]="rows"
+            (ngModelChange)="onRowsColsChange()"
+            class="select-input"
+          >
+            <option [value]="8">8</option>
+            <option [value]="9">9</option>
+            <option [value]="10">10</option>
+            <option [value]="11">11</option>
+            <option [value]="12">12</option>
+          </select>
+        </div>
+        <div class="flex w-full flex-1 items-center gap-4">
+          <label class="font-medium text-gray-700 dark:text-gray-300"
+            >列数:</label
+          >
+          <select
+            [(ngModel)]="cols"
+            (ngModelChange)="onRowsColsChange()"
+            class="select-input"
+          >
+            <option [value]="8">8</option>
+            <option [value]="9">9</option>
+            <option [value]="10">10</option>
+            <option [value]="11">11</option>
+            <option [value]="12">12</option>
+          </select>
+        </div>
       </div>
-    }
-  </div>
-  <div class="flex w-full flex-col items-center justify-center">
-    @for (items of board; track $index; let row = $index) {
-      <div class="flex w-full items-center justify-center">
-        @for (item of items; track $index; let col = $index) {
-          <div class="flex h-20 w-20 items-center justify-center">
-            <div class="cursor-pointer" (click)="setCell(row, col)">
-              <app-sokoban-cell
-                [cell]="item"
-                class="h-20 w-20 cursor-pointer border border-gray-800 bg-white dark:border-gray-200 dark:bg-gray-800"
-              ></app-sokoban-cell>
-            </div>
+
+      <!-- 元素选择器 -->
+      <div class="mt-8 grid grid-cols-3 gap-2">
+        <div
+          *ngFor="let cell of cells"
+          (click)="selected = cell"
+          class="element-item mt-5"
+        >
+          <div class="element-icon">
+            <app-sokoban-cell [cell]="cell"></app-sokoban-cell>
+            <span
+              class="absolute right-1/2 text-xl text-blue-500"
+              *ngIf="selected === cell"
+            >
+              ▲
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10 flex h-12 w-full justify-center">
+        <button
+          (click)="resetAll()"
+          class="duration-250 group relative w-full overflow-hidden rounded-full border border-[#2B57DB]/90 bg-[#2B57DB] px-5 py-3 font-medium text-[#FEE9C5] shadow-sm transition-all hover:border-[#1F45B5] hover:bg-[#1F45B5] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#FEE9C5]/50 active:scale-95 active:bg-[#183A9C]"
+        >
+          <span class="relative z-10"> 一键清除 </span>
+
+          <!-- 微光效果 -->
+          <div
+            class="absolute -inset-12 rotate-12 bg-gradient-to-r from-[#FEE9C5]/20 via-transparent to-[#FEE9C5]/20 opacity-0 transition-all duration-500 group-hover:-translate-x-12 group-hover:opacity-100"
+          ></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid Editor -->
+    <div class="rounded-xl bg-white p-6 shadow-lg md:w-2/3 dark:bg-gray-800">
+      <div class="flex w-full flex-col items-center justify-center">
+        @for (items of board; track $index; let row = $index) {
+          <div class="flex w-full items-center justify-center">
+            @for (item of items; track $index; let col = $index) {
+              <div class="flex h-20 w-20 items-center justify-center">
+                <div
+                  class="h-full w-full cursor-pointer"
+                  (click)="setCell(row, col)"
+                >
+                  <app-sokoban-cell
+                    [cell]="item"
+                    class="h-20 w-20 cursor-pointer border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800"
+                  ></app-sokoban-cell>
+                </div>
+              </div>
+            }
           </div>
         }
       </div>
-    }
+    </div>
   </div>
-  <code
-    class="mx-10 my-10 cursor-pointer rounded-md border border-solid border-zinc-200 bg-gray-100 p-4 text-zinc-600 dark:bg-gray-600 dark:text-zinc-200"
-    (click)="copyJSON()"
-  >
-    {{ getJSON() }}
-  </code>
+
+  <!-- Output -->
+  <div class="mx-auto mt-8 max-w-7xl">
+    <div class="group relative">
+      <pre (click)="copyJSON()" class="code-block">
+        {{ getJSON() }}
+      </pre>
+      <div class="copy-indicator">
+        <span class="copy-text">点击复制</span>
+        <div class="h-4 w-4 rounded-sm bg-blue-500"></div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -9,11 +9,13 @@ export class SokobanStore {
   private _position = signal<Position>({ x: 3, y: 2 });
   private _targetPositions = signal<List<Position>>(List([]));
   private _dataSetName = signal<string>(dataSetNames[0]);
+  private _steps = signal<number>(0);
 
   readonly board = this._board.asReadonly();
   readonly position = this._position.asReadonly();
   readonly targetPositions = this._targetPositions.asReadonly();
   readonly dataSetName = this._dataSetName.asReadonly();
+  readonly steps = this._steps.asReadonly();
 
   finished = computed(() => {
     return this.targetPositions().every(p => this.board().get(p.x)!.get(p.y)!.type === CellType.Box);
@@ -49,6 +51,10 @@ export class SokobanStore {
 
   updateDataSetName(dataSetName: string) {
     this._dataSetName.set(dataSetName);
+  }
+
+  addStep() {
+    this._steps.update(steps => steps + 1);
   }
 
 }
